@@ -27,7 +27,7 @@ jobs:
       - name: Get changelog
         id: changelog
         run: |
-          TAG="$(git describe --tags --abbrev=0)"
+          TAG="$(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)"
           GIT_LOG="$(git log $TAG..HEAD --oneline --pretty=format:"- %s [%an]")"
           CHANGELOG=$(cat << EOF
           Changelog:
@@ -83,7 +83,6 @@ jobs:
         with:
           base: main
           add-paths: Version.txt
-          reviewers: fruffy, jafingerhut, jnfoster
           commit-message: ${{ steps.message.outputs.content }}
           signoff: false
           branch: v${{ env.VERSION }}
